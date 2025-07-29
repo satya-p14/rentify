@@ -3,6 +3,11 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Provider } from "react-redux";
 import { store } from "@/redux/store";
+import Link from "next/link";
+import '@/styles/globals.css';
+import Header from "@/components/common/Header";
+import Footer from "@/components/common/Footer";
+import ReduxProvider from "@/redux/ReduxProvider";
 // import '@/styles/globals.css';
 
 
@@ -28,11 +33,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Provider store={store}>{children}</Provider>
+      <body>
+        {/* <nav className="p-4 bg-gray-100 flex gap-4">
+          <Link href="/">Home</Link>
+          <Link href="/dashboard">Dashboard</Link>
+          <Link href="/login">Login</Link>
+          <Link href="/register">Register</Link>
+        </nav> */}
+        {/* <Provider store={store}> */}
+          <Header />
+          {/* <main className="min-h-screen px-4 py-8">{children}</main> */}
+          <ReduxProvider>{children}</ReduxProvider>
+          <Footer />
+        {/* </Provider> */}
       </body>
-    </html>
+    </html >
   );
 }
