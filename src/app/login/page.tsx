@@ -12,12 +12,12 @@ export default function LoginPage() {
     const [form, setForm] = useState({ email: '', password: '' });
     const [error, setError] = useState('');
 
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+    const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+        setForm({ ...form, [evt.target.name]: evt.target.value });
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async (evt: React.FormEvent) => {
+        evt.preventDefault();
 
         const res = await fetch(
             `http://localhost:3001/users?email=${form.email}&password=${form.password}`

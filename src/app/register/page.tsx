@@ -1,6 +1,4 @@
-// src/app/register/page.tsx
 'use client';
-
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
@@ -11,20 +9,18 @@ export default function RegisterPage() {
     const [form, setForm] = useState({ name: '', email: '', password: '' });
     const [error, setError] = useState('');
 
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+    const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+        setForm({ ...form, [evt.target.name]: evt.target.value });
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async (evt: React.FormEvent) => {
+        evt.preventDefault();
 
         const { name, email, password } = form;
         if (!name || !email || !password) {
             setError('All fields are required');
             return;
-        }
-
-        // ✅ Simulate successful registration
+        }        
         Cookies.set('token', 'mock-token', { expires: 1 });
         router.push('/dashboard');
     };
