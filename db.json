@@ -103,6 +103,14 @@
             "email": "tenant13@rentify.com",
             "phone": "1234567812",
             "verified": true
+        },
+        {
+            "id": 14,
+            "role": "admin",
+            "name": "Satya",
+            "email": "admin@example.com",
+            "phone": "admin",
+            "verified": true
         }
     ],
     "properties": [
