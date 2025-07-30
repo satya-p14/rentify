@@ -23,11 +23,14 @@ export default function LoginPage() {
             `http://localhost:3001/users?email=${form.email}&password=${form.password}`
         );
         const users = await res.json();
+        console.log(users, "users");
 
         if (users.length > 0) {
             Cookies.set('token', 'mock-token', { expires: 1 });
             dispatch(loginSuccess({ email: form.email }));
-            router.push('/dashboard');
+            localStorage.setItem('tenantEmail', form.email);
+            localStorage.setItem('userId', users[0].id);
+            router.push('/properties');
         } else {
             setError('Invalid email or password');
         }

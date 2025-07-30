@@ -9,6 +9,15 @@ interface Property {
     title: string;
     location: string;
     image: string;
+    description: string;
+    city: string;
+    type: string;
+    price: number,
+    ownerId: number;
+    highlight: boolean;
+    datePosted: string;
+    verified: boolean;
+    availability: string;
 }
 
 export default function PropertyListPage() {
@@ -24,14 +33,15 @@ export default function PropertyListPage() {
     }, []);
 
     return (
-        <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="p-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {properties.map((property) => (
-                <Link key={property.id} href={`/properties/${property.id}`} className="block bg-white shadow rounded overflow-hidden">
+                <Link key={property.id} href={`/properties/${property.id}`}
+                    className="block bg-white shadow rounded overflow-hidden">
                     <div className="relative w-full h-48">
-                        <Image
+                        <img
+                            key={property.id}
                             src={property.image}
-                            alt={property.title}
-                            fill
+                            alt={property.title}                            
                             className="object-cover"
                         />
                     </div>
