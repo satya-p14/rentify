@@ -10,18 +10,11 @@ export default function Header() {
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
     const { email, role } = useSelector((state: RootState) => state.auth);
-    console.log(email, role, "Header");
 
     const handleLogout = () => {
         dispatch(logout());
     };
-
-    // useEffect(() => {
-    //     const storedEmail = localStorage.getItem('tenantEmail');
-    //     setEmail(storedEmail);
-    // }, []);
-
-
+   
     return (
         <header className="bg-green-100 shadow-md">
             <div className="max-w-7xl mx-auto flex items-center justify-between p-4">
@@ -30,13 +23,13 @@ export default function Header() {
                 </Link>
                 <nav className="hidden md:flex gap-4">
                     <Link href="/" className="hover:text-blue-500">Dashboard</Link>
-                    {email && role === 'admin' && <Link href="/appointments" className="text-blue-600 hover:underline">
+                    {email && role === 'admin' && <Link href="/admin/users" className="text-blue-600 hover:underline">
                         Manage users
                     </Link>}
-                    {email && role === 'admin' && <Link href="/appointments" className="text-blue-600 hover:underline">
+                    {email && role === 'admin' && <Link href="/" className="text-blue-600 hover:underline">
                         Manage property
                     </Link>}
-                    {email && role === 'owner' && <Link href="/appointments" className="text-blue-600 hover:underline">
+                    {email && role === 'owner' && <Link href="/" className="text-blue-600 hover:underline">
                         Appointments
                     </Link>}
                     {!email && <Link href="/register" className="hover:text-blue-500">Register</Link>}
