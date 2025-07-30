@@ -6,4 +6,5 @@ interface Appointment {
     propertyId: number;
     scheduledDate: string;
     timestamp: string;
+    tenantEmail:string;
 }

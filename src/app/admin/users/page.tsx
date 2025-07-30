@@ -73,7 +73,7 @@ export default function ManageUsersPage() {
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Manage Users ( {users.length} )</h1>
+      <h1 className="text-2xl font-bold mb-4 text-left">Manage Users ( {users.length} )</h1>
       <table className="w-full border text-sm">
         <thead className="bg-gray-100">
           <tr>
