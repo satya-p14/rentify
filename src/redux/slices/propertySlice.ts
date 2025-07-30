@@ -1,15 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface Property {
-    id: number;
-    title: string;
-    location: string;
-}
-
-interface PropertyState {
-    list: Property[];
-}
-
 const initialState: PropertyState = {
     list: [],
 };

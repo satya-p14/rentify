@@ -1,15 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface Appointment {
-    id: number;
-    propertyId: number;
-    customer: string;
-    date: string;
-}
-
-interface AppointmentState {
-    list: Appointment[];
-}
 
 const initialState: AppointmentState = {
     list: [],

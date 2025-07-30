@@ -3,22 +3,6 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 
-interface Property {
-    id: number;
-    title: string;
-    location: string;
-    image: string;
-    description: string;
-    city: string;
-    type: string;
-    price: number,
-    ownerId: number;
-    highlight: boolean;
-    datePosted: string;
-    verified: boolean;
-    availability: string;
-}
-
 export default function PropertyDetails() {
     const params = useParams();
     const [property, setProperty] = useState<Property | null>(null);
@@ -34,8 +18,8 @@ export default function PropertyDetails() {
             setProperty(data);
         };
         fetchProperty();
-        const storedEmail = localStorage.getItem('tenantEmail');
-        setEmail(storedEmail);
+        // const storedEmail = localStorage.getItem('tenantEmail');
+        // setEmail(storedEmail);
     }, [params.id]);
 
     const handleFormSubmit = async (e: React.FormEvent) => {
