@@ -3,10 +3,18 @@ import { Toaster } from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { RootState } from '@/redux/store';
 import AdminDashboard from "./admin/dashboard/page";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Home() {
   const { email, role } = useSelector((state: RootState) => state.auth);
-  console.log(email, role, "home");
+  const router = useRouter();
+  
+  useEffect(() => {
+    if (role === 'admin') {
+      router.replace('/');
+    }
+  }, [role, router]);
   return (
     <main>
       {/* <h1 className="text-2xl font-bold">Welcome to the Property App</h1> */}
