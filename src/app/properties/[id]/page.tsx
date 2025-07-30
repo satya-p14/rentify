@@ -1,5 +1,4 @@
 'use client';
-
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
@@ -10,13 +9,23 @@ interface Property {
     location: string;
     image: string;
     description: string;
+    city: string;
+    type: string;
+    price: number,
+    ownerId: number;
+    highlight: boolean;
+    datePosted: string;
+    verified: boolean;
+    availability: string;
 }
 
 export default function PropertyDetails() {
     const params = useParams();
     const [property, setProperty] = useState<Property | null>(null);
-    const [form, setForm] = useState({ name: '', email: '', message: '' });
-    const [submitted, setSubmitted] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [email, setEmail] = useState<string | null>(null);
+    const [formData, setFormData] = useState({ date: '', time: '' });
+    const [confirmed, setConfirmed] = useState(false);
 
     useEffect(() => {
         const fetchProperty = async () => {
@@ -25,40 +34,44 @@ export default function PropertyDetails() {
             setProperty(data);
         };
         fetchProperty();
+        const storedEmail = localStorage.getItem('tenantEmail');
+        setEmail(storedEmail);
     }, [params.id]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleFormSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const inquiry = {
-            ...form,
-            propertyId: property?.id,
-            submittedAt: new Date().toISOString(),
+        if (!email || !property) return;
+
+        const appointment = {
+            id: Math.floor(Math.random() * 100) + 1,
+            userId: localStorage.getItem("userId"),
+            ownerId: property.ownerId,
+            status: confirmed,
+            propertyId: property.id,
+            scheduledDate: formData.date,
+            timestamp: new Date().toISOString(),
         };
 
-        await fetch('http://localhost:3001/inquiries', {
+        await fetch('http://localhost:3001/appointments', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(inquiry),
+            body: JSON.stringify(appointment),
         });
 
-        setSubmitted(true);
-        setForm({ name: '', email: '', message: '' });
+        setConfirmed(true);
+        setShowModal(false);
+        setFormData({ date: '', time: '' });
     };
 
-    if (!property) return <div>Loading...</div>;
+    if (!property) return <div className="p-6">Loading property details...</div>;
 
     return (
-        <div className="max-w-4xl mx-auto p-6 bg-white shadow rounded">
-            <div className="relative w-full h-96 mb-6">
-                <Image
+        <div className="max-w-4xl mx-auto p-4 bg-white shadow rounded">
+            <div className="relative w-full h-50 mb-4">
+                <img
                     src={property.image}
                     alt={property.title}
-                    fill
                     className="object-cover rounded"
                 />
             </div>
@@ -67,44 +80,64 @@ export default function PropertyDetails() {
             <p className="text-gray-600 mb-4">{property.location}</p>
             <p className="mb-6">{property.description}</p>
 
-            <hr className="my-6" />
+            {email ? (
+                <>
+                    <button
+                        onClick={() => setShowModal(true)}
+                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    >
+                        Book Appointment
+                    </button>
 
-            <h2 className="text-xl font-semibold mb-2">Enquire about this property</h2>
-
-            {submitted && (
-                <p className="text-green-600 mb-4">Inquiry submitted successfully!</p>
+                    {confirmed && (
+                        <p className="text-green-600 mt-4">Appointment successfully booked!</p>
+                    )}
+                </>
+            ) : (
+                <p className="text-gray-600 mt-6">
+                    Please <a href="/login" className="text-blue-600 underline">login</a> to book an appointment.
+                </p>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <input
-                    name="name"
-                    placeholder="Your Name"
-                    value={form.name}
-                    onChange={handleChange}
-                    required
-                    className="w-full border p-2 rounded"
-                />
-                <input
-                    name="email"
-                    type="email"
-                    placeholder="Your Email"
-                    value={form.email}
-                    onChange={handleChange}
-                    required
-                    className="w-full border p-2 rounded"
-                />
-                <textarea
-                    name="message"
-                    placeholder="Your Message"
-                    value={form.message}
-                    onChange={handleChange}
-                    required
-                    className="w-full border p-2 rounded h-32"
-                />
-                <button type="submit" className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
-                    Submit Inquiry
-                </button>
-            </form>
+            {/* Modal */}
+            {showModal && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+                    <div className="bg-white p-6 rounded w-full max-w-md">
+                        <h2 className="text-xl font-semibold mb-4">Book Appointment</h2>
+                        <form onSubmit={handleFormSubmit} className="space-y-4">
+                            <input
+                                type="date"
+                                required
+                                value={formData.date}
+                                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                                className="w-full border p-2 rounded"
+                            />
+                            <input
+                                type="time"
+                                required
+                                value={formData.time}
+                                onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                                className="w-full border p-2 rounded"
+                            />
+                            <div className="flex justify-end gap-4">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowModal(false)}
+                                    className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                                >
+                                    Confirm
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

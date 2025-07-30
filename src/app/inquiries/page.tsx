@@ -16,7 +16,7 @@ export default function InquiriesPage() {
 
     useEffect(() => {
         const fetchInquiries = async () => {
-            const res = await fetch('http://localhost:5000/inquiries');
+            const res = await fetch('http://localhost:3001/inquiries');
             const data = await res.json();
             setInquiries(data.reverse()); // show newest first
         };
