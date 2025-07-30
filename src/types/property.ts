@@ -12,6 +12,6 @@ interface Property {
     datePosted: string;
     verified: boolean;
     availability: string;
-    status:string;
+    status: 'pending' | 'approved' | 'rejected';
     isNew:boolean
 }

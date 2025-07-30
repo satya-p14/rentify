@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
+import { I18nextProvider } from 'react-i18next';
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Provider } from "react-redux";
-import { store } from "@/redux/store";
-import Link from "next/link";
 import '@/styles/globals.css';
-import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
+import i18n from '@/lib/i18n';
 import ReduxProvider from "@/redux/ReduxProvider";
 import MainLayout from "@/components/layout/MainLayout";
-// import '@/styles/globals.css';
+import I18nextProviderWrapper from "@/lib/I18nextProviderWrapper";
+
 
 
 const geistSans = Geist({
@@ -36,7 +34,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <ReduxProvider>
-          <MainLayout>{children}</MainLayout>
+          <I18nextProviderWrapper>
+            <MainLayout>{children}</MainLayout>
+          </I18nextProviderWrapper>
         </ReduxProvider>
       </body>
     </html >

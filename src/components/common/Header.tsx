@@ -14,7 +14,7 @@ export default function Header() {
     const handleLogout = () => {
         dispatch(logout());
     };
-   
+
     return (
         <header className="bg-green-100 shadow-md">
             <div className="max-w-7xl mx-auto flex items-center justify-between p-4">
@@ -26,10 +26,10 @@ export default function Header() {
                     {email && role === 'admin' && <Link href="/admin/users" className="text-blue-600 hover:underline">
                         Manage users
                     </Link>}
-                    {email && role === 'admin' && <Link href="/" className="text-blue-600 hover:underline">
+                    {email && role === 'admin' && <Link href="/admin/properties" className="text-blue-600 hover:underline">
                         Manage property
                     </Link>}
-                    {email && role === 'owner' && <Link href="/" className="text-blue-600 hover:underline">
+                    {email && role === 'admin' && <Link href="/admin/appointments" className="text-blue-600 hover:underline">
                         Appointments
                     </Link>}
                     {!email && <Link href="/register" className="hover:text-blue-500">Register</Link>}

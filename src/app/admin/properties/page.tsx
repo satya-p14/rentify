@@ -1,88 +1,92 @@
 'use client';
-
 import { useEffect, useState } from 'react';
 
-export default function AdminPropertiesPage() {
-  const [properties, setProperties] = useState([]);
-  const [filter, setFilter] = useState('all');
+export default function ManagePropertiesPage() {
+  const [properties, setProperties] = useState<Property[]>([]);
 
-  const filteredProperties = properties.filter((p: Property) => {
-    if (filter === 'all') return true;
-    return p.status === filter;
-  });
-
-  const fetchProps = async () => {
+  const fetchProperties = async () => {
     const res = await fetch('http://localhost:3001/properties');
     const data = await res.json();
     setProperties(data);
   };
 
-  const updateStatus = async (id: string, status: string) => {
+  const updateStatus = async (id: number, status: 'approved' | 'rejected') => {
     await fetch(`http://localhost:3001/properties/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status }),
     });
-    fetchProps();
+    fetchProperties();
   };
 
-  const deleteProp = async (id: string) => {
-    if (confirm('Delete property?')) {
-      await fetch(`http://localhost:3001/properties/${id}`, { method: 'DELETE' });
-      fetchProps();
+  const deleteProperty = async (id: number) => {
+    if (confirm('Are you sure you want to delete this property?')) {
+      await fetch(`http://localhost:3001/properties/${id}`, {
+        method: 'DELETE',
+      });
+      fetchProperties();
     }
   };
 
   useEffect(() => {
-    fetchProps();
+    fetchProperties();
   }, []);
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <h1 className="text-xl font-bold mb-4">All Properties</h1>
-      <div className="flex gap-2 mb-4">
-        {['all', 'pending', 'approved', 'rejected'].map((status) => (
-          <button
-            key={status}
-            onClick={() => setFilter(status)}
-            className={`px-3 py-1 rounded ${filter === status ? 'bg-blue-600 text-white' : 'bg-gray-200'
-              }`}
-          >
-            {status}
-          </button>
-        ))}
-      </div>
-      <div className="grid gap-4">
-        {properties.map((prop: any) => (
-          <div key={prop.id} className="border p-4 rounded shadow bg-white flex justify-between items-center">
-            <div>
-              <h2 className="font-semibold">{prop.title}</h2>
-              <p className="text-sm text-gray-500">{prop.location}</p>
-              <p className="text-xs text-blue-600 capitalize">Status: {prop.status || 'pending'}</p>
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => updateStatus(prop.id, 'approved')}
-                className="bg-green-600 text-white px-3 py-1 rounded"
-              >
-                Approve
-              </button>
-              <button
-                onClick={() => updateStatus(prop.id, 'rejected')}
-                className="bg-yellow-600 text-white px-3 py-1 rounded"
-              >
-                Reject
-              </button>
-              <button
-                onClick={() => deleteProp(prop.id)}
-                className="bg-red-600 text-white px-3 py-1 rounded"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="p-2 max-w-6xl mx-auto">
+      <h1 className="text-2xl font-bold mb-2 text-left">Manage Properties ( {properties.length} )</h1>
+
+      <table className="w-full border text-sm">
+        <thead className="bg-gray-100">
+          <tr>
+            <th className="p-2 text-left border">Property Id</th>
+            <th className="p-2 text-left border">Title</th>
+            <th className="p-2 text-left border">Location</th>
+            <th className="p-2 text-left border">Type</th>
+            <th className="p-2 text-left border">Price</th>
+            <th className="p-2 text-left border">availability</th>
+            <th className="p-2 text-left border">Status</th>
+            <th className="p-2 text-left border">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {properties.map((property: Property) => (
+            <tr key={property.id} className="border bg-white even:bg-gray-200">
+              <td className="p-2 border">{property.id}</td>
+              <td className="p-2 border">{property.title}</td>
+              <td className="p-2 border">{property.city}</td>
+              <td className="p-2 border">{property.type}</td>
+              <td className="p-2 border">₹{property.price.toLocaleString()}</td>
+              <td className="p-2 border capitalize">{property.availability}</td>
+              <td className="p-2 border">{property.status}</td>
+              <td className="p-2 space-x-2">
+                {property.status !== 'approved' && (
+                  <button
+                    onClick={() => updateStatus(property.id, 'approved')}
+                    className="px-2 py-1 bg-green-600 text-white rounded"
+                  >
+                    Approve
+                  </button>
+                )}
+                {property.status !== 'rejected' && (
+                  <button
+                    onClick={() => updateStatus(property.id, 'rejected')}
+                    className="px-2 py-1 bg-yellow-600 text-white rounded"
+                  >
+                    Reject
+                  </button>
+                )}
+                <button
+                  onClick={() => deleteProperty(property.id)}
+                  className="px-2 py-1 bg-red-600 text-white rounded"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
