@@ -1,0 +1,3 @@
+interface PropertyState {
+    list: Property[];
+}

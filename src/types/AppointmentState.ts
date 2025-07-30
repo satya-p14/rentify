@@ -1,0 +1,3 @@
+interface AppointmentState {
+    list: Appointment[];
+}

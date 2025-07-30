@@ -24,13 +24,22 @@ export default function LoginPage() {
         );
         const users = await res.json();
         console.log(users, "users");
-
+        debugger;
         if (users.length > 0) {
-            Cookies.set('token', 'mock-token', { expires: 1 });
-            dispatch(loginSuccess({ email: form.email }));
-            localStorage.setItem('tenantEmail', form.email);
-            localStorage.setItem('userId', users[0].id);
-            router.push('/properties');
+            // Cookies.set('token', 'mock-token', { expires: 1 });
+            const user = users[0];
+            dispatch(loginSuccess({
+                email: user.email,
+                userId: user.id,
+                role: user.role
+            }));
+            // localStorage.setItem('tenantEmail', form.email);
+            // localStorage.setItem('userId', users[0].id);
+            if (user.role === 'admin') {
+                router.push('/');
+            } else {
+                router.push('/properties');
+            }
         } else {
             setError('Invalid email or password');
         }
