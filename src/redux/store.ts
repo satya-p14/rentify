@@ -3,6 +3,7 @@ import exampleReducer from './slices/propertySlice';
 import authReducer from './slices/authSlice';
 import propertyReducer from './slices/propertySlice';
 import appointmentReducer from './slices/appointmentSlice';
+import loaderReducer from './slices/loaderSlice'
 
 export const store = configureStore({
     reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
         auth: authReducer,
         properties: propertyReducer,
         appointments: appointmentReducer,
+        loader: loaderReducer,
     },
 });
 

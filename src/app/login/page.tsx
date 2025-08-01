@@ -23,7 +23,7 @@ export default function LoginPage() {
             `http://localhost:3001/users?email=${form.email}&password=${form.password}`
         );
         const users = await res.json();
-        
+
         if (users.length > 0) {
             Cookies.set('token', 'mock-token', { expires: 1 });
             const user = users[0];
@@ -32,12 +32,17 @@ export default function LoginPage() {
                 userId: user.id,
                 role: user.role
             }));
-            Cookies.set('role',user.role);
-            Cookies.set('email',user.email);
+            Cookies.set('role', user.role);
+            Cookies.set('email', user.email);
             // localStorage.setItem('tenantEmail', form.email);
-            // localStorage.setItem('userId', users[0].id);
+            localStorage.setItem('userId', users[0].id);
+            debugger;
             if (user.role === 'admin') {
                 router.push('/');
+            } else if (user.role === 'owner') {
+                router.push('/owners/listings');
+            } else if (user.role === 'tenant') {
+                router.push('/tenant');
             } else {
                 router.push('/properties');
             }

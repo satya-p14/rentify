@@ -51,8 +51,8 @@ export default function ManagePropertiesPage() {
         </thead>
         <tbody>
           {properties.map((property: Property) => (
-            <tr key={property.id} className="border bg-white even:bg-gray-200">
-              <td className="p-2 border">{property.id}</td>
+            <tr key={Number(property.id)} className="border bg-white even:bg-gray-200">
+              <td className="p-2 border">{Number(property.id)}</td>
               <td className="p-2 border">{property.title}</td>
               <td className="p-2 border">{property.city}</td>
               <td className="p-2 border">{property.type}</td>
@@ -62,7 +62,7 @@ export default function ManagePropertiesPage() {
               <td className="p-2 space-x-2">
                 {property.status !== 'approved' && (
                   <button
-                    onClick={() => updateStatus(property.id, 'approved')}
+                    onClick={() => updateStatus(Number(Number(property.id)), 'approved')}
                     className="px-2 py-1 bg-green-600 text-white rounded"
                   >
                     Approve
@@ -70,14 +70,14 @@ export default function ManagePropertiesPage() {
                 )}
                 {property.status !== 'rejected' && (
                   <button
-                    onClick={() => updateStatus(property.id, 'rejected')}
+                    onClick={() => updateStatus(Number(Number(property.id)), 'rejected')}
                     className="px-2 py-1 bg-yellow-600 text-white rounded"
                   >
                     Reject
                   </button>
                 )}
                 <button
-                  onClick={() => deleteProperty(property.id)}
+                  onClick={() => deleteProperty(Number(Number(property.id)))}
                   className="px-2 py-1 bg-red-600 text-white rounded"
                 >
                   Delete

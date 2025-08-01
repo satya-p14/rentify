@@ -4,6 +4,5 @@ interface User {
     name:string;
     email: string;
     phone:string;    
-    verified?: boolean;   
-    
+    verified?: boolean;
 }

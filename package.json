@@ -11,10 +11,12 @@
     "test": "jest"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.7",
     "@reduxjs/toolkit": "^2.8.2",
     "i18next": "^25.3.2",
     "i18next-http-backend": "^3.0.2",
     "js-cookie": "^3.0.5",
+    "keen-slider": "^6.8.6",
     "next": "15.4.4",
     "next-i18next": "^15.4.2",
     "react": "19.1.0",

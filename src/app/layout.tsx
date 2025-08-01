@@ -7,8 +7,7 @@ import i18n from '@/lib/i18n';
 import ReduxProvider from "@/redux/ReduxProvider";
 import MainLayout from "@/components/layout/MainLayout";
 import I18nextProviderWrapper from "@/lib/I18nextProviderWrapper";
-
-
+import 'keen-slider/keen-slider.min.css';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
