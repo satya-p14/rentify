@@ -1,17 +1,17 @@
 interface Property {
-    id: number;
+    id: string;
     title: string;
     location: string;
-    image: string;
+    images: string[];
     description: string;
     city: string;
-    type: string;
-    price: number,
-    ownerId: number;
+    type : string;
+    price: string;
+    ownerId: string;
     highlight: boolean;
     datePosted: string;
     verified: boolean;
     availability: string;
     status: 'pending' | 'approved' | 'rejected';
-    isNew:boolean
+    isNew:boolean;
 }

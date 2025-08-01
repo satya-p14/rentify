@@ -5,8 +5,8 @@ export const metadata = {
 
 export default function PropertiesLayout({ children }: { children: React.ReactNode; }) {
     return (
-        <section className="pt-4">
-            <h1 className="text-2xl font-bold mb-4">{metadata.title}</h1>
+        <section className="pt-0">
+            {/* <h1 className="text-2xl font-bold mb-4">{metadata.title}</h1> */}
             {children}
         </section>
     );

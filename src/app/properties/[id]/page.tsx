@@ -1,127 +1,145 @@
 'use client';
-import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
 
-export default function PropertyDetails() {
-    const params = useParams();
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { useKeenSlider } from 'keen-slider/react';
+import Image from 'next/image';
+
+export default function PropertyDetailsPage() {
+    const { id } = useParams();
+    const router = useRouter();
     const [property, setProperty] = useState<Property | null>(null);
-    const [showModal, setShowModal] = useState(false);
-    const [email, setEmail] = useState<string | null>(null);
-    const [formData, setFormData] = useState({ date: '', time: '' });
-    const [confirmed, setConfirmed] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [sliderRef] = useKeenSlider<HTMLDivElement>({ loop: true });
+    const [userEmail, setUserEmail] = useState('');
+    const [appointmentDate, setAppointmentDate] = useState('');
+    const [bookingSuccess, setBookingSuccess] = useState(false);
+    const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
 
     useEffect(() => {
-        const fetchProperty = async () => {
-            const res = await fetch(`http://localhost:3001/properties/${params.id}`);
-            const data = await res.json();
-            setProperty(data);
-        };
-        fetchProperty();
-        // const storedEmail = localStorage.getItem('tenantEmail');
-        // setEmail(storedEmail);
-    }, [params.id]);
+        if (!id) return;
+        fetch(`http://localhost:3001/properties/${id}`)
+            .then(res => res.json())
+            .then(setProperty)
+            .finally(() => setLoading(false));
+    }, [id]);
 
-    const handleFormSubmit = async (e: React.FormEvent) => {
+    useEffect(() => {
+        const userData = localStorage.getItem('userId');
+        if (userData) {
+            setLoggedInUser(JSON.parse(userData));
+        }
+    }, []);
+
+    const handleBooking = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!email || !property) return;
+        if (!userEmail || !appointmentDate) return;
 
-        const appointment = {
-            id: Math.floor(Math.random() * 100) + 1,
-            userId: localStorage.getItem("userId"),
-            ownerId: property.ownerId,
-            status: confirmed,
-            propertyId: property.id,
-            scheduledDate: formData.date,
-            timestamp: new Date().toISOString(),
+        const appointment :Appointment= {
+            id: 0,
+            userId: 0,
+            ownerId: 0,
+            status: '',
+            propertyId: 0,
+            scheduledDate: '',
+            timestamp: '',
+            tenantEmail: ''
         };
 
-        await fetch('http://localhost:3001/appointments', {
+        const res = await fetch('http://localhost:3001/appointments', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(appointment),
         });
 
-        setConfirmed(true);
-        setShowModal(false);
-        setFormData({ date: '', time: '' });
+        if (res.ok) {
+            setBookingSuccess(true);
+            setUserEmail('');
+            setAppointmentDate('');
+        }
     };
 
-    if (!property) return <div className="p-6">Loading property details...</div>;
+    if (loading) return <p className="p-4">Loading...</p>;
+    if (!property) return <p className="p-4">Property not found.</p>;
 
     return (
-        <div className="max-w-4xl mx-auto p-4 bg-white shadow rounded">
-            <div className="relative w-full h-50 mb-4">
-                <img
-                    src={property.image}
-                    alt={property.title}
-                    className="object-cover rounded"
-                />
+        <div className="max-w-5xl mx-auto px-4 py-8">
+            {/* Carousel */}
+            <div className="relative mb-6">
+                <div ref={sliderRef} className="keen-slider rounded-lg overflow-hidden h-64 sm:h-80">
+                    {property.images?.map((img, idx) => (
+                        <div key={idx} className="keen-slider__slide relative">
+                            <Image src={img} alt={`Image ${idx}`} fill className="object-cover" />
+                        </div>
+                    ))}
+                </div>
             </div>
 
-            <h1 className="text-2xl font-bold mb-2">{property.title}</h1>
-            <p className="text-gray-600 mb-4">{property.location}</p>
-            <p className="mb-6">{property.description}</p>
+            {/* Details */}
+            <h1 className="text-2xl font-bold">{property.title}</h1>
+            <p className="text-gray-600 mb-2">{property.city}</p>
+            <p className="text-sm mb-1">
+                <strong>Type:</strong> {property.type}
+            </p>
+            <p className="text-sm mb-1">
+                <strong>Price:</strong> ${property.price}
+            </p>
+            <p className="text-sm mb-1">
+                <strong>Description:</strong> {property.description || 'N/A'}
+            </p>
+            <p className="text-sm mt-1">
+                <span className="font-medium">Date:</span> {property.datePosted || 'N/A'}
+            </p>
+            <p className="text-sm">
+                <span className="font-medium">Availabality:</span> {property.availability ?? 'N/A'}
+            </p>
 
-            {email ? (
-                <>
-                    <button
-                        onClick={() => setShowModal(true)}
-                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                    >
-                        Book Appointment
-                    </button>
+            {/* Booking Form */}
+            <div className="mt-6 border-t pt-6">
+                <h2 className="text-xl font-semibold mb-4">Book an Appointment</h2>
 
-                    {confirmed && (
-                        <p className="text-green-600 mt-4">Appointment successfully booked!</p>
-                    )}
-                </>
-            ) : (
-                <p className="text-gray-600 mt-6">
-                    Please <a href="/login" className="text-blue-600 underline">login</a> to book an appointment.
-                </p>
-            )}
+                {!loggedInUser ? (
+                    <p className="text-red-500">
+                        Please <a href="/login" className="underline text-blue-600">log in</a> to book an appointment.
+                    </p>
+                ) : (
+                    <>
+                        {bookingSuccess && (
+                            <p className="text-green-600 mb-4">Appointment booked successfully!</p>
+                        )}
 
-            {/* Modal */}
-            {showModal && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
-                    <div className="bg-white p-6 rounded w-full max-w-md">
-                        <h2 className="text-xl font-semibold mb-4">Book Appointment</h2>
-                        <form onSubmit={handleFormSubmit} className="space-y-4">
-                            <input
-                                type="date"
-                                required
-                                value={formData.date}
-                                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                                className="w-full border p-2 rounded"
-                            />
-                            <input
-                                type="time"
-                                required
-                                value={formData.time}
-                                onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                                className="w-full border p-2 rounded"
-                            />
-                            <div className="flex justify-end gap-4">
-                                <button
-                                    type="button"
-                                    onClick={() => setShowModal(false)}
-                                    className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                                >
-                                    Confirm
-                                </button>
+                        <form onSubmit={handleBooking} className="space-y-4 max-w-md">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700">Your Email</label>
+                                <input
+                                    type="email"
+                                    className="mt-1 w-full border rounded px-3 py-2 bg-gray-100"
+                                    value={loggedInUser.email}
+                                />
                             </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700">Appointment Date</label>
+                                <input
+                                    type="date"
+                                    className="mt-1 w-full border rounded px-3 py-2"
+                                    value={appointmentDate}
+                                    onChange={(e) => setAppointmentDate(e.target.value)}
+                                    required
+                                />
+                            </div>
+
+                            <button
+                                type="submit"
+                                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer"
+                            >
+                                Book Appointment
+                            </button>
                         </form>
-                    </div>
-                </div>
-            )}
+                    </>
+                )}
+            </div>
         </div>
     );
 }

@@ -1,18 +1,29 @@
 'use client';
 
 import TimeDisplay from '@/components/common/TimeDisplay';
+import { startLoading, stopLoading } from '@/redux/slices/loaderSlice';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
 
 export default function AdminAppointmentsPage() {
     const { t } = useTranslation();
     const [appointments, setAppointments] = useState<Appointment[]>([]);
     const [tenantEmail, setTenantEmail] = useState('');
+    const dispatch = useDispatch();
 
     const fetchAppointments = async () => {
-        const res = await fetch('http://localhost:3001/appointments');
-        const data = await res.json();
-        setAppointments(data);
+        try {
+            dispatch(startLoading());
+            const res = await fetch('http://localhost:3001/appointments');
+            const data = await res.json();
+            setAppointments(data);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            dispatch(stopLoading());
+        }
+
     };
 
     // const fetchTenantEmail = async (id: string) => {

@@ -22,7 +22,7 @@ export default function RegisterPage() {
             return;
         }        
         Cookies.set('token', 'mock-token', { expires: 1 });
-        router.push('/dashboard');
+        router.push('/');
     };
 
     return (
