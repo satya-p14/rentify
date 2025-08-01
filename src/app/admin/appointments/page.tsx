@@ -23,14 +23,7 @@ export default function AdminAppointmentsPage() {
         } finally {
             dispatch(stopLoading());
         }
-
     };
-
-    // const fetchTenantEmail = async (id: string) => {
-    //     const res = await fetch(`http://localhost:3001/users/${id}`, { method: 'GET' });
-    //     const data = await res.json();
-    //     setTenantEmail(data.email);        
-    // };
 
     useEffect(() => {
         fetchAppointments();

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { logout } from '@/redux/slices/authSlice';
@@ -15,8 +15,8 @@ export default function Header() {
 
     const handleLogout = () => {
         dispatch(logout());
+        localStorage.clear();
         router.push('/properties');
-
     };
 
     return (
@@ -46,7 +46,7 @@ export default function Header() {
                         Appointments
                     </Link>}
 
-                    {/* tenant routes */}                    
+                    {/* tenant routes */}
 
                     {email && role === 'tenant' && <Link href="/" className="text-blue-600 hover:underline">
                         Properties
@@ -67,7 +67,7 @@ export default function Header() {
                             </button>
                         )}
                     </div>
-                    
+
                 </nav>
 
                 {/* Mobile menu toggle */}

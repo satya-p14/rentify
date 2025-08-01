@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from '@/redux/store';
 import CustomDropdown from "@/components/common/CustomDropdown";
+import { startLoading, stopLoading } from "@/redux/slices/loaderSlice";
 
 const propertyType = ['Apartment', 'House', 'Studio', 'Penthouse', 'Villa'];
 const availabilityType = ['Available', 'Not Available'];
@@ -28,11 +29,13 @@ const OwnerPropertyList = () => {
     const [editStatus, setEditStatus] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const dispath = useDispatch();
 
     const fetchProperties = async () => {
         setLoading(true);
         setError('');
         try {
+            dispath(startLoading());
             const res = await fetch(`http://localhost:3001/properties?ownerId=${ownerId}`);
             if (!res.ok) throw new Error('Failed to load properties');
             const data = await res.json();
@@ -41,9 +44,9 @@ const OwnerPropertyList = () => {
             setError(err.message || 'Error loading properties');
         } finally {
             setLoading(false);
+            dispath(stopLoading());
         }
     };
-
 
     useEffect(() => {
         fetchProperties();
@@ -53,6 +56,7 @@ const OwnerPropertyList = () => {
         const confirm = window.confirm('Are you sure you want to delete this property?');
         if (!confirm) return;
         try {
+            dispath(startLoading());
             const res = await fetch(`http://localhost:3001/properties/${id}`, {
                 method: 'DELETE',
             });
@@ -60,32 +64,40 @@ const OwnerPropertyList = () => {
             await fetchProperties();
         } catch (err) {
             alert('Error deleting property');
+        } finally {
+            dispath(stopLoading());
         }
     };
 
     const updateProperty = async () => {
         if (!editing) return;
-        const updated = {
-            ...editing,
-            title: editTitle,
-            description: editDescription,
-            price: Number(editPrice),
-            location: editLocation,
-            type: editType,
-            availability: editAvailability,
-            status: editStatus,
-        };
-        await fetch(`http://localhost:3001/properties/${editing.id}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updated),
-        });
+        try {
+            dispath(startLoading());
+            const updated = {
+                ...editing,
+                title: editTitle,
+                description: editDescription,
+                price: Number(editPrice),
+                location: editLocation,
+                type: editType,
+                availability: editAvailability,
+                status: editStatus,
+            };
+            await fetch(`http://localhost:3001/properties/${editing.id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updated),
+            });
 
-        setProperties((prev: any) =>
-            prev.map((p: Property) => (p.id === editing.id ? { ...p, ...updated } : p))
-        );
-        setEditing(null);
-
+            setProperties((prev: any) =>
+                prev.map((p: Property) => (p.id === editing.id ? { ...p, ...updated } : p))
+            );
+            setEditing(null);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            dispath(stopLoading());
+        }
     };
 
     const openEdit = (property: Property) => {
@@ -112,7 +124,7 @@ const OwnerPropertyList = () => {
             price: newPrice,
             id: (Math.floor(Math.random() * 100) + 1).toString(),
             location: newLocation,
-            image: "NA",
+            images: [],
             city: newLocation,
             type: newType,
             highlight: false,
@@ -122,16 +134,22 @@ const OwnerPropertyList = () => {
             status: 'pending',
             isNew: true
         };
-        debugger;
-        const res = await fetch(`http://localhost:3001/properties`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newProp),
-        });
-        const created = await res.json();
-        setProperties(prev => [...prev, created]);
-        setNewTitle('');
-        setAdding(null);
+        try {
+            dispath(startLoading());
+            const res = await fetch(`http://localhost:3001/properties`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newProp),
+            });
+            const created = await res.json();
+            setProperties(prev => [...prev, created]);
+            setNewTitle('');
+            setAdding(null);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            dispath(stopLoading());
+        }
     };
 
     return (
@@ -144,7 +162,7 @@ const OwnerPropertyList = () => {
                             id: "",
                             title: "",
                             location: "",
-                            image: "",
+                            images: [],
                             description: "",
                             city: "",
                             type: "",

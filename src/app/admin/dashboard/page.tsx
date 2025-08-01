@@ -1,6 +1,8 @@
 'use client';
 
+import { startLoading, stopLoading } from '@/redux/slices/loaderSlice';
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 export default function AdminDashboard() {
     const [users, setUsers] = useState([]);
@@ -12,19 +14,28 @@ export default function AdminDashboard() {
     const rejectedCount = properties.filter((p: Property) => p.status === 'rejected').length;
     const recentPropertiesCnt = recentProperties.filter((p: Property) => p.isNew === true).length;
     recentProperties;
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        Promise.all([
-            fetch('http://localhost:3001/users').then(res => res.json()),
-            fetch('http://localhost:3001/properties').then(res => res.json()),
-            fetch('http://localhost:3001/appointments').then(res => res.json()),
-            fetch('http://localhost:3001/recent-properties').then(res => res.json())
-        ]).then(([u, p, a, b]) => {
-            setUsers(u);
-            setProperties(p);
-            setAppointments(a);
-            setRecentProperties(b);
-        });
+        try {
+            dispatch(startLoading());
+            Promise.all([
+                fetch('http://localhost:3001/users').then(res => res.json()),
+                fetch('http://localhost:3001/properties').then(res => res.json()),
+                fetch('http://localhost:3001/appointments').then(res => res.json()),
+                fetch('http://localhost:3001/recent-properties').then(res => res.json())
+            ]).then(([u, p, a, b]) => {
+                setUsers(u);
+                setProperties(p);
+                setAppointments(a);
+                setRecentProperties(b);
+            });
+        } catch (error) {
+            console.log(error);
+        }finally{
+            dispatch(stopLoading());
+        }
+
     }, []);
 
     return (

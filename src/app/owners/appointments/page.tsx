@@ -1,4 +1,5 @@
 'use client';
+import { startLoading, stopLoading } from '@/redux/slices/loaderSlice';
 import { RootState } from '@/redux/store';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,21 +8,29 @@ export default function OwnerAppointments() {
     const ownerId = userId;
     const [appointments, setAppointments] = useState<Appointment[]>([]);
     const [loading, setLoading] = useState(true);
+    const dispath = useDispatch();
 
     useEffect(() => {
-        async function fetchAppointments() {
-            try {
-                const res = await fetch(`http://localhost:3001/appointments?ownerId=${ownerId}`);
-                const data = await res.json();
-                setAppointments(data);
-            } catch (error) {
-                console.error('Failed to fetch appointments:', error);
-            } finally {
-                setLoading(false);
+        try {
+            dispath(startLoading());
+            async function fetchAppointments() {
+                try {
+                    const res = await fetch(`http://localhost:3001/appointments?ownerId=${ownerId}`);
+                    const data = await res.json();
+                    setAppointments(data);
+                } catch (error) {
+                    console.error('Failed to fetch appointments:', error);
+                } finally {
+                    setLoading(false);
+                }
             }
+            fetchAppointments();
+        } catch (error) {
+            console.error('Failed to fetch appointments:', error);
+        } finally {
+            dispath(stopLoading());
         }
 
-        fetchAppointments();
     }, [ownerId]);
 
     if (loading) return <p className="text-gray-500">Loading appointments...</p>;

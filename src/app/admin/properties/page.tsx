@@ -1,30 +1,53 @@
 'use client';
+import { startLoading, stopLoading } from '@/redux/slices/loaderSlice';
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 export default function ManagePropertiesPage() {
   const [properties, setProperties] = useState<Property[]>([]);
+  const dispatch = useDispatch();
 
   const fetchProperties = async () => {
-    const res = await fetch('http://localhost:3001/properties');
-    const data = await res.json();
-    setProperties(data);
+    try {
+      dispatch(startLoading());
+      const res = await fetch('http://localhost:3001/properties');
+      const data = await res.json();
+      setProperties(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(stopLoading());
+    }
   };
 
   const updateStatus = async (id: number, status: 'approved' | 'rejected') => {
-    await fetch(`http://localhost:3001/properties/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status }),
-    });
-    fetchProperties();
+    try {
+      dispatch(startLoading());
+      await fetch(`http://localhost:3001/properties/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+      fetchProperties();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(stopLoading());
+    }
   };
 
   const deleteProperty = async (id: number) => {
-    if (confirm('Are you sure you want to delete this property?')) {
-      await fetch(`http://localhost:3001/properties/${id}`, {
-        method: 'DELETE',
-      });
-      fetchProperties();
+    try {
+      if (confirm('Are you sure you want to delete this property?')) {
+        await fetch(`http://localhost:3001/properties/${id}`, {
+          method: 'DELETE',
+        });
+        fetchProperties();
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(stopLoading());
     }
   };
 
