@@ -1,9 +1,9 @@
 interface Appointment {
-    id: number;
-    userId: number;
-    ownerId: number;
+    id: string;
+    userId: string;
+    ownerId: string;
     status: string;
-    propertyId: number;
+    propertyId: string;
     scheduledDate: string;
     timestamp: string;
     tenantEmail:string;

@@ -2,17 +2,29 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import PropertyCard from './PropertyCard';
+import { useDispatch } from 'react-redux';
+import { startLoading, stopLoading } from '@/redux/slices/loaderSlice';
 
 export default function PropertyListPage() {
     const [properties, setProperties] = useState<Property[]>([]);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
+    const dispath = useDispatch();
 
     useEffect(() => {
-        fetch('http://localhost:3001/properties')
-            .then((res) => res.json())
-            .then(setProperties)
-            .finally(() => setLoading(false));
+        try {
+            dispath(startLoading());
+            fetch('http://localhost:3001/properties')
+                .then((res) => res.json())
+                .then(setProperties)
+                .finally(() => setLoading(false));
+        } catch (error) {
+            console.log(error);
+        }
+        finally {
+           dispath(stopLoading());
+        }
+
     }, []);
 
     if (loading) return <p className="text-gray-500">Loading properties...</p>;

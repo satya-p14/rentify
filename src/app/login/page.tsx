@@ -1,16 +1,19 @@
 'use client';
 import { useDispatch } from 'react-redux';
 import { loginSuccess } from '@/redux/slices/authSlice';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { useState } from 'react';
 import AuthLayout from '@/components/layout/AuthLayout';
+import { startLoading, stopLoading } from '@/redux/slices/loaderSlice';
 
 export default function LoginPage() {
     const dispatch = useDispatch();
     const router = useRouter();
     const [form, setForm] = useState({ email: '', password: '' });
     const [error, setError] = useState('');
+    // const searchParams = useSearchParams();
+    // const redirect = searchParams.get('redirect') || '/properties';
 
     const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
         setForm({ ...form, [evt.target.name]: evt.target.value });
@@ -18,36 +21,39 @@ export default function LoginPage() {
 
     const handleSubmit = async (evt: React.FormEvent) => {
         evt.preventDefault();
-
-        const res = await fetch(
-            `http://localhost:3001/users?email=${form.email}&password=${form.password}`
-        );
-        const users = await res.json();
-
-        if (users.length > 0) {
-            Cookies.set('token', 'mock-token', { expires: 1 });
-            const user = users[0];
-            dispatch(loginSuccess({
-                email: user.email,
-                userId: user.id,
-                role: user.role
-            }));
-            Cookies.set('role', user.role);
-            Cookies.set('email', user.email);
-            // localStorage.setItem('tenantEmail', form.email);
-            localStorage.setItem('userId', users[0].id);
-            debugger;
-            if (user.role === 'admin') {
-                router.push('/');
-            } else if (user.role === 'owner') {
-                router.push('/owners/listings');
-            } else if (user.role === 'tenant') {
-                router.push('/tenant');
-            } else {
-                router.push('/properties');
+        dispatch(startLoading());
+        try {
+            const res = await fetch(
+                `http://localhost:3001/users?email=${form.email}&password=${form.password}`
+            );
+            const users = await res.json();
+            if (users.length > 0) {
+                Cookies.set('token', 'mock-token', { expires: 1 });
+                const user = users[0];
+                dispatch(loginSuccess({
+                    email: user.email,
+                    userId: user.id,
+                    role: user.role
+                }));
+                Cookies.set('role', user.role);
+                Cookies.set('email', user.email);
+                localStorage.setItem('userEmail', user.email);
+                localStorage.setItem('userId', users[0].id);
+                if (user.role === 'admin') {
+                    router.push('/');
+                } else if (user.role === 'owner') {
+                    router.push('/owners/listings');
+                } else if (user.role === 'tenant') {
+                    router.push('/tenant');
+                } else {
+                    router.push('/properties');
+                }
             }
-        } else {
+        } catch (error) {
+            console.log(error);
             setError('Invalid email or password');
+        } finally {
+            dispatch(stopLoading());
         }
     };
 

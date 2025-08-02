@@ -1,9 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import { useKeenSlider } from 'keen-slider/react';
 import Image from 'next/image';
+import { useDispatch } from 'react-redux';
+import { startLoading, stopLoading } from '@/redux/slices/loaderSlice';
 
 export default function PropertyDetailsPage() {
     const { id } = useParams();
@@ -15,48 +17,62 @@ export default function PropertyDetailsPage() {
     const [appointmentDate, setAppointmentDate] = useState('');
     const [bookingSuccess, setBookingSuccess] = useState(false);
     const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+    const dispatch = useDispatch();
+    // const pathname = usePathname();
 
     useEffect(() => {
         if (!id) return;
-        fetch(`http://localhost:3001/properties/${id}`)
-            .then(res => res.json())
-            .then(setProperty)
-            .finally(() => setLoading(false));
+        try {
+            dispatch(startLoading());
+            fetch(`http://localhost:3001/properties/${id}`)
+                .then(res => res.json())
+                .then(setProperty)
+                .finally(() => setLoading(false));
+        } catch (error) {
+            console.log(error);
+        } finally {
+            dispatch(stopLoading());
+        }
     }, [id]);
 
     useEffect(() => {
         const userData = localStorage.getItem('userId');
         if (userData) {
             setLoggedInUser(JSON.parse(userData));
+            // router.push(`/login?redirect=${pathname}`);
         }
     }, []);
 
     const handleBooking = async (e: React.FormEvent) => {
         e.preventDefault();
-
         if (!userEmail || !appointmentDate) return;
-
-        const appointment :Appointment= {
-            id: 0,
-            userId: 0,
-            ownerId: 0,
-            status: '',
-            propertyId: 0,
-            scheduledDate: '',
-            timestamp: '',
-            tenantEmail: ''
+        const appointment: Appointment = {
+            id: (Math.floor(Math.random() * 100) + 1).toString(),
+            userId: localStorage.getItem('userId')?.toString() || 'null',
+            ownerId: property?.ownerId.toString() || 'null',
+            status: property?.status || '',
+            propertyId: property?.id || '',
+            scheduledDate: new Date().toISOString(),
+            timestamp: new Date().toISOString(),
+            tenantEmail: localStorage.getItem('userEmail') || ''
         };
+        try {
+            dispatch(startLoading());
+            const res = await fetch('http://localhost:3001/appointments', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(appointment),
+            });
 
-        const res = await fetch('http://localhost:3001/appointments', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(appointment),
-        });
-
-        if (res.ok) {
-            setBookingSuccess(true);
-            setUserEmail('');
-            setAppointmentDate('');
+            if (res.ok) {
+                setBookingSuccess(true);
+                setUserEmail('');
+                setAppointmentDate('');
+            }
+        } catch (error) {
+            console.log(error);
+        } finally {
+            dispatch(stopLoading());
         }
     };
 
@@ -65,6 +81,12 @@ export default function PropertyDetailsPage() {
 
     return (
         <div className="max-w-5xl mx-auto px-4 py-8">
+            <button
+                onClick={() => router.push('/properties')}
+                className="mb-6 inline-block text-blue-600 hover:underline text-sm"
+            >
+                ← Back to Property List
+            </button>
             {/* Carousel */}
             <div className="relative mb-6">
                 <div ref={sliderRef} className="keen-slider rounded-lg overflow-hidden h-64 sm:h-80">
@@ -140,6 +162,12 @@ export default function PropertyDetailsPage() {
                     </>
                 )}
             </div>
+            <button
+                onClick={() => router.push('/properties')}
+                className="mt-6 inline-block text-blue-600 hover:underline text-sm"
+            >
+                ← Back to Property List
+            </button>
         </div>
     );
 }

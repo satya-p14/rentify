@@ -1,5 +1,7 @@
 'use client';
+import { startLoading, stopLoading } from '@/redux/slices/loaderSlice';
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 export default function ManageUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -13,16 +15,32 @@ export default function ManageUsersPage() {
     verified: false
   });
 
+  const dispatch = useDispatch();
+
   const fetchUsers = async () => {
-    const res = await fetch('http://localhost:3001/users');
-    const data = await res.json();
-    setUsers(data);
+    try {
+      dispatch(startLoading());
+      const res = await fetch('http://localhost:3001/users');
+      const data = await res.json();
+      setUsers(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(stopLoading());
+    }
   };
 
   const deleteUser = async (id: string) => {
-    if (confirm('Are you sure you want to delete this user?')) {
-      await fetch(`http://localhost:3001/users/${id}`, { method: 'DELETE' });
-      fetchUsers();
+    try {
+      dispatch(startLoading());
+      if (confirm('Are you sure you want to delete this user?')) {
+        await fetch(`http://localhost:3001/users/${id}`, { method: 'DELETE' });
+        fetchUsers();
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(stopLoading());
     }
   };
 
@@ -40,31 +58,52 @@ export default function ManageUsersPage() {
   };
 
   const handleUpdateUser = async (user: User) => {
-    await fetch(`http://localhost:3001/users/${formData.id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
-    });
-    setEditingUser(null);
-    fetchUsers();
+    try {
+      dispatch(startLoading());
+      await fetch(`http://localhost:3001/users/${formData.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      setEditingUser(null);
+      fetchUsers();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(stopLoading());
+    }
   };
 
   const toggleVerify = async (user: User) => {
-    await fetch(`http://localhost:3001/users/${user.id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ verified: !user.verified }),
-    });
-    fetchUsers();
+    try {
+      dispatch(startLoading());
+      await fetch(`http://localhost:3001/users/${user.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ verified: !user.verified }),
+      });
+      fetchUsers();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(stopLoading());
+    }
   };
 
   const changeRole = async (id: string, newRole: string) => {
-    await fetch(`http://localhost:3001/users/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ role: newRole }),
-    });
-    fetchUsers();
+    try {
+      dispatch(startLoading());
+      await fetch(`http://localhost:3001/users/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: newRole }),
+      });
+      fetchUsers();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(stopLoading());
+    }
   };
 
   useEffect(() => {
