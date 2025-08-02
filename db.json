@@ -5,14 +5,16 @@
       "role": "admin",
       "name": "Admin Alice",
       "email": "admin1@rentify.com",
-      "phone": "1234567800",
+      "password": "123456",
+      "phone": "1234567890",
       "verified": true
     },
     {
       "id": "2",
-      "role": "admin",
+      "role": "tenant",
       "name": "Admin Bob",
       "email": "admin2@rentify.com",
+      "password": "123456",
       "phone": "1234567801",
       "verified": true
     },
@@ -21,6 +23,7 @@
       "role": "admin",
       "name": "Admin Charlie",
       "email": "admin3@rentify.com",
+      "password": "123456",
       "phone": "1234567802",
       "verified": true
     },
@@ -29,6 +32,7 @@
       "role": "owner",
       "name": "Owner Diana",
       "email": "owner4@rentify.com",
+      "password": "123456",
       "phone": "1234567803",
       "verified": true
     },
@@ -37,6 +41,7 @@
       "role": "owner",
       "name": "Owner Ethan",
       "email": "owner5@rentify.com",
+      "password": "123456",
       "phone": "1234567804",
       "verified": true
     },
@@ -45,6 +50,7 @@
       "role": "owner",
       "name": "Owner Fiona",
       "email": "owner6@rentify.com",
+      "password": "123456",
       "phone": "1234567805",
       "verified": true
     },
@@ -53,6 +59,7 @@
       "role": "owner",
       "name": "Owner George",
       "email": "owner7@rentify.com",
+      "password": "123456",
       "phone": "1234567806",
       "verified": true
     },
@@ -61,6 +68,7 @@
       "role": "tenant",
       "name": "Tenant Hannah",
       "email": "tenant8@rentify.com",
+      "password": "123456",
       "phone": "1234567807",
       "verified": true
     },
@@ -69,6 +77,7 @@
       "role": "tenant",
       "name": "Tenant Ian",
       "email": "tenant9@rentify.com",
+      "password": "123456",
       "phone": "1234567808",
       "verified": true
     },
@@ -77,6 +86,7 @@
       "role": "tenant",
       "name": "Tenant Julia",
       "email": "tenant10@rentify.com",
+      "password": "123456",
       "phone": "1234567809",
       "verified": true
     },
@@ -85,6 +95,7 @@
       "role": "tenant",
       "name": "Tenant Alice",
       "email": "tenant11@rentify.com",
+      "password": "123456",
       "phone": "1234567810",
       "verified": true
     },
@@ -93,6 +104,7 @@
       "role": "tenant",
       "name": "Tenant Bob",
       "email": "tenant12@rentify.com",
+      "password": "123456",
       "phone": "1234567811",
       "verified": true
     },
@@ -101,15 +113,35 @@
       "role": "tenant",
       "name": "Tenant Charlie",
       "email": "tenant13@rentify.com",
+      "password": "123456",
       "phone": "1234567812",
       "verified": true
     },
     {
       "id": "14",
-      "role": "admin",
       "name": "Satya",
-      "email": "admin@example.com",
-      "phone": "admin",
+      "email": "satya2@rentify.com",
+      "password": "123456",
+      "phone": "1234567890",
+      "role": "tenant",
+      "verified": true
+    },
+    {
+      "id": "94",
+      "name": "satya",
+      "email": "satya3@rentify.com",
+      "password": "123456",
+      "phone": "14785236987",
+      "role": "tenant",
+      "verified": true
+    },
+    {
+      "id": "5",
+      "name": "aaritra",
+      "email": "Aaritra@gmail.com",
+      "password": "$2b$10$OqoenIr6Ni8gun5vSAr9SO7QDgD3ZEA.m648Zs/feSTidPAmFa2.K",
+      "phone": "147852",
+      "role": "tenant",
       "verified": true
     }
   ],
@@ -129,24 +161,8 @@
       "highlight": false,
       "datePosted": "2025-07-20",
       "verified": true,
-      "availability": "Not Available"
-    },
-    {
-      "id": "2",
-      "title": "Cozy Studio in Phoenix",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      "city": "Chicago",
-      "type": "House",
-      "price": 2417,
-      "images": [
-        "https://picsum.photos/id/1018/800/600",
-        "https://picsum.photos/id/1019/800/600"
-      ],
-      "ownerId": 5,
-      "highlight": false,
-      "datePosted": "2025-07-19",
-      "verified": true,
-      "availability": "Not Available"
+      "availability": "Not Available",
+      "status": "approved"
     },
     {
       "id": "3",
@@ -163,24 +179,8 @@
       "highlight": false,
       "datePosted": "2025-07-18",
       "verified": false,
-      "availability": "Not Available"
-    },
-    {
-      "id": "4",
-      "title": "Spacious Villa in Chicago",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      "city": "Chicago",
-      "type": "Studio",
-      "price": 1661,
-      "images": [
-        "https://picsum.photos/id/1022/800/600",
-        "https://picsum.photos/id/1023/800/600"
-      ],
-      "ownerId": 4,
-      "highlight": false,
-      "datePosted": "2025-07-17",
-      "verified": true,
-      "availability": "Not Available"
+      "availability": "Not Available",
+      "status": "approved"
     },
     {
       "id": "5",
@@ -197,58 +197,8 @@
       "highlight": true,
       "datePosted": "2025-07-16",
       "verified": true,
-      "availability": "Available"
-    },
-    {
-      "id": "6",
-      "title": "Modern Villa in Houston",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      "city": "New York",
-      "type": "Studio",
-      "price": 1752,
-      "images": [
-        "https://picsum.photos/id/1026/800/600",
-        "https://picsum.photos/id/1027/800/600"
-      ],
-      "ownerId": 7,
-      "highlight": false,
-      "datePosted": "2025-07-15",
-      "verified": false,
-      "availability": "Available"
-    },
-    {
-      "id": "7",
-      "title": "Modern Studio in Phoenix",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      "city": "Houston",
-      "type": "Condo",
-      "price": 2444,
-      "images": [
-        "https://picsum.photos/id/1028/800/600",
-        "https://picsum.photos/id/1029/800/600"
-      ],
-      "ownerId": 7,
-      "highlight": false,
-      "datePosted": "2025-07-14",
-      "verified": true,
-      "availability": "Not Available"
-    },
-    {
-      "id": "8",
-      "title": "Modern Villa in Los Angeles",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      "city": "Phoenix",
-      "type": "Condo",
-      "price": 1156,
-      "images": [
-        "https://picsum.photos/id/1030/800/600",
-        "https://picsum.photos/id/1031/800/600"
-      ],
-      "ownerId": 4,
-      "highlight": false,
-      "datePosted": "2025-07-13",
-      "verified": true,
-      "availability": "Available"
+      "availability": "Available",
+      "status": "approved"
     },
     {
       "id": "9",
@@ -266,57 +216,6 @@
       "datePosted": "2025-07-12",
       "verified": false,
       "availability": "Not Available"
-    },
-    {
-      "id": "10",
-      "title": "Luxury Condo in New York",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      "city": "Houston",
-      "type": "House",
-      "price": 853,
-      "images": [
-        "https://picsum.photos/id/1034/800/600",
-        "https://picsum.photos/id/1035/800/600"
-      ],
-      "ownerId": 4,
-      "highlight": true,
-      "datePosted": "2025-07-11",
-      "verified": true,
-      "availability": "Not Available"
-    },
-    {
-      "id": "11",
-      "title": "Luxury House in Los Angeles",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      "city": "Los Angeles",
-      "type": "Condo",
-      "price": 2949,
-      "images": [
-        "https://picsum.photos/id/1036/800/600",
-        "https://picsum.photos/id/1037/800/600"
-      ],
-      "ownerId": 4,
-      "highlight": false,
-      "datePosted": "2025-07-10",
-      "verified": true,
-      "availability": "Not Available"
-    },
-    {
-      "id": "12",
-      "title": "Spacious Condo in Los Angeles",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      "city": "New York",
-      "type": "Apartment",
-      "price": 1579,
-      "images": [
-        "https://picsum.photos/id/1038/800/600",
-        "https://picsum.photos/id/1039/800/600"
-      ],
-      "ownerId": 5,
-      "highlight": false,
-      "datePosted": "2025-07-09",
-      "verified": false,
-      "availability": "Available"
     },
     {
       "id": "13",
@@ -350,23 +249,6 @@
       "highlight": false,
       "datePosted": "2025-07-07",
       "verified": true,
-      "availability": "Not Available"
-    },
-    {
-      "id": "15",
-      "title": "Cozy Apartment in Chicago",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      "city": "Phoenix",
-      "type": "House",
-      "price": 2783,
-      "images": [
-        "https://picsum.photos/id/1044/800/600",
-        "https://picsum.photos/id/1045/800/600"
-      ],
-      "ownerId": 6,
-      "highlight": true,
-      "datePosted": "2025-07-06",
-      "verified": false,
       "availability": "Not Available"
     },
     {
@@ -421,29 +303,12 @@
       "availability": "Available"
     },
     {
-      "id": "19",
-      "title": "Modern Apartment in Houston",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      "city": "Houston",
-      "type": "Apartment",
-      "price": 1665,
-      "images": [
-        "https://picsum.photos/id/1052/800/600",
-        "https://picsum.photos/id/1053/800/600"
-      ],
-      "ownerId": 4,
-      "highlight": false,
-      "datePosted": "2025-07-02",
-      "verified": true,
-      "availability": "Not Available"
-    },
-    {
       "id": "20",
       "title": "Cozy House in Los Angeles",
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       "city": "Los Angeles",
       "type": "Villa",
-      "price": 2046,
+      "price": 20467,
       "images": [
         "https://picsum.photos/id/1054/800/600",
         "https://picsum.photos/id/1055/800/600"
@@ -452,7 +317,60 @@
       "highlight": true,
       "datePosted": "2025-07-01",
       "verified": true,
-      "availability": "Available"
+      "availability": "Available",
+      "location": "Los Angeles",
+      "status": "approved"
+    },
+    {
+      "id": 83,
+      "title": "",
+      "ownerId": 7,
+      "description": "New property description",
+      "price": 1000,
+      "location": "",
+      "image": "",
+      "city": "",
+      "type": "",
+      "highlight": false,
+      "datePosted": "",
+      "verified": false,
+      "availability": "",
+      "status": "pending",
+      "isNew": true
+    },
+    {
+      "id": "39",
+      "title": "Owner 4 property",
+      "ownerId": "4",
+      "description": "Owner 4 property",
+      "price": 2200000,
+      "location": "Pune",
+      "images": [],
+      "city": "Pune",
+      "type": [],
+      "highlight": false,
+      "datePosted": "Sat Aug 02 2025",
+      "verified": false,
+      "availability": [],
+      "status": "approved",
+      "isNew": true
+    },
+    {
+      "id": "40",
+      "title": "Test add property",
+      "ownerId": "4",
+      "description": "Test add property",
+      "price": "123456",
+      "location": "Lucknow",
+      "images": [],
+      "city": "Lucknow",
+      "type": "Studio",
+      "highlight": false,
+      "datePosted": "Sat Aug 02 2025",
+      "verified": false,
+      "availability": "Available",
+      "status": "approved",
+      "isNew": true
     }
   ],
   "top-properties": [
@@ -666,9 +584,27 @@
       "propertyId": 1,
       "userId": 8,
       "ownerId": 7,
-      "status": "confirmed",
-      "scheduledDate": "2025-07-23",
-      "timestamp": "2025-07-21T07:04:52.144429"
+      "status": "cancelled",
+      "scheduledDate": "",
+      "timestamp": ""
+    },
+    {
+      "id": 84,
+      "userId": null,
+      "ownerId": 7,
+      "status": false,
+      "propertyId": "1",
+      "scheduledDate": "2025-07-05",
+      "timestamp": "2025-07-30T11:02:22.453Z"
+    },
+    {
+      "id": 6,
+      "userId": "1",
+      "ownerId": 7,
+      "status": false,
+      "propertyId": "1",
+      "scheduledDate": "2025-07-15",
+      "timestamp": "2025-07-30T16:28:39.488Z"
     }
   ],
   "inquiries": [

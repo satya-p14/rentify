@@ -6,14 +6,14 @@ import Cookies from 'js-cookie';
 import { useState } from 'react';
 import AuthLayout from '@/components/layout/AuthLayout';
 import { startLoading, stopLoading } from '@/redux/slices/loaderSlice';
+import bcrypt from 'bcryptjs';
 
 export default function LoginPage() {
     const dispatch = useDispatch();
     const router = useRouter();
     const [form, setForm] = useState({ email: '', password: '' });
     const [error, setError] = useState('');
-    // const searchParams = useSearchParams();
-    // const redirect = searchParams.get('redirect') || '/properties';
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
         setForm({ ...form, [evt.target.name]: evt.target.value });
@@ -24,11 +24,20 @@ export default function LoginPage() {
         dispatch(startLoading());
         try {
             const res = await fetch(
-                `http://localhost:3001/users?email=${form.email}&password=${form.password}`
+                `http://localhost:3001/users?email=${form.email}`
             );
             const users = await res.json();
+            debugger;
+            if (users && users.length === 0) {
+                setError('User not found ,Login failed. Invalid email or password');
+                return;
+            }
+            const match = await bcrypt.compare(form.password, users[0].password);
+            if (!match) {
+                setError('Incorrect password');
+                return;
+            }
             if (users.length > 0) {
-                Cookies.set('token', 'mock-token', { expires: 1 });
                 const user = users[0];
                 dispatch(loginSuccess({
                     email: user.email,
@@ -71,15 +80,25 @@ export default function LoginPage() {
                     placeholder="Email"
                     required
                 />
-                <input
-                    name="password"
-                    type="password"
-                    value={form.password}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded"
-                    placeholder="Password"
-                    required
-                />
+                <div className="relative">
+                    <input
+                        name="password"
+                        type={showPassword ? 'text' : 'password'}
+                        value={form.password}
+                        onChange={handleChange}
+                        className="w-full border px-3 py-2 rounded pr-10"
+                        placeholder="Password"
+                        required
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-blue-600"
+                    >
+                        {showPassword ? 'Hide' : 'Show'}
+                    </button>
+                </div>
+
                 <button
                     type="submit"
                     className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
